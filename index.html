@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TuProfe20 Lab - Productos notables</title>
+    <title>TuProfe20 Lab - Productos Notables</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -25,7 +25,7 @@
             100% { transform: translateY(-105vh) rotate(360deg); } 
         }
         @keyframes slideInRight { 
-            0% { opacity: 0; transform: translateX(20px); } 
+            0% { opacity: 0; transform: translateX(15px); } 
             100% { opacity: 1; transform: translateX(0); } 
         }
         @keyframes confettiExplosion { 
@@ -63,10 +63,10 @@
         .katex { font-weight: 900 !important; }
         .katex-display { margin: 0 !important; padding: 0 !important; }
         
-        .math-card .katex { font-size: clamp(0.9rem, 1.8vw, 1.3rem) !important; color: #1e293b !important; }
-        .math-enunciado .katex { font-size: clamp(1rem, 2.2vw, 1.6rem) !important; color: #ffffff !important; }
-        .math-current .katex { font-size: clamp(1.1rem, 2.8vw, 2.3rem) !important; color: #0f172a !important; }
-        .math-history .katex { font-size: clamp(0.9rem, 2vw, 1.5rem) !important; color: #475569 !important; }
+        .math-card .katex { font-size: clamp(0.9rem, 1.8vw, 1.25rem) !important; color: #1e293b !important; }
+        .math-enunciado .katex { font-size: clamp(0.9rem, 1.8vw, 1.4rem) !important; color: #ffffff !important; }
+        .math-current .katex { font-size: clamp(1rem, 2.5vw, 2.2rem) !important; color: #0f172a !important; }
+        .math-history .katex { font-size: clamp(0.9rem, 2vw, 1.6rem) !important; color: #475569 !important; }
     </style>
 </head>
 <body class="bg-slate-950 font-fun">
@@ -86,7 +86,6 @@
         const Home = (p) => <Icon {...p} paths='<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>' />;
         const ChevronLeft = (p) => <Icon {...p} paths='<polyline points="15 18 9 12 15 6"/>' />;
         const ChevronRight = (p) => <Icon {...p} paths='<polyline points="9 18 15 12 9 6"/>' />;
-        const HelpCircle = (p) => <Icon {...p} paths='<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>' />;
 
         const AudioController = {
             ctx: null, muted: false,
@@ -155,424 +154,369 @@
             );
         });
 
-        // Tarjeta interactiva para la fórmula y ayuda desplegable
-        const InteractiveFormula = memo(({ title, latex, hint }) => {
-            const [showHint, setShowHint] = useState(false);
-
-            return (
-                <div 
-                    onClick={() => setShowHint(!showHint)}
-                    className="bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200 hover:border-indigo-400 rounded-2xl p-4 text-center shadow-md my-2 cursor-pointer transition-all hover:scale-[1.02] active:scale-98 relative group"
-                >
-                    <div className="flex items-center justify-center gap-2 mb-1">
-                        <span className="text-xs font-black tracking-widest text-indigo-700 uppercase">{title}</span>
-                        <HelpCircle className="w-4 h-4 text-indigo-500 group-hover:rotate-12 transition-transform" />
-                    </div>
-                    <div className="math-card py-1">
-                        <MathDisplay latex={latex} />
-                    </div>
-                    {showHint && hint && (
-                        <div className="mt-3 text-xs sm:text-sm font-bold text-indigo-900 bg-white/90 p-2.5 rounded-xl border border-indigo-200 animate-jellyPop shadow-sm">
-                            💡 <MathDisplay inline latex={hint} />
-                        </div>
-                    )}
-                    <span className="text-[10px] text-indigo-400 font-bold block mt-1">Haz clic para ver la regla</span>
+        const FormulaBadge = memo(({ title, latex }) => (
+            <div className="bg-white/90 border-2 border-indigo-200 rounded-xl p-3 my-2 text-center shadow-md backdrop-blur-sm">
+                <span className="text-xs font-black tracking-wider text-indigo-700 uppercase block mb-1">{title}</span>
+                <div className="math-card">
+                    <MathDisplay latex={latex} />
                 </div>
-            );
-        });
+            </div>
+        ));
 
         const EXERCISES = [
             {
-                id: 1, title: "Ejercicio 1", subtitle: "Suma al Cuadrado Básica",
+                id: 1, title: "Ejercicio 1", subtitle: "Binomio al Cuadrado (Suma)",
                 cardGradient: "from-blue-500/30 to-cyan-600/30 border-blue-400", badgeColor: "bg-blue-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="(x + 2)^2" /></span>,
+                enunciado: () => <span>Efectuar directamente cada producto:<br/><MathDisplay inline latex="\text{a) } (x+2)^2 \quad \text{ b) } (3x+6)^2" /></span>,
                 steps: [
                     { 
                         latex: String.raw`(a+b)^2 = a^2 + 2ab + b^2`, 
-                        propertyText: "1. Recordando la Identidad", 
-                        robotSpeech: "Para elevar un binomio al cuadrado, usamos el cuadrado del primero, más el doble producto del primero por el segundo, más el cuadrado del segundo.",
-                        graphic: <InteractiveFormula title="Binomio Suma al Cuadrado" latex="(a+b)^2 = a^2 + 2ab + b^2" hint="\text{Identificamos } a=x \text{ y } b=2" />
+                        propertyText: "Fórmula Binomio al Cuadrado", 
+                        robotSpeech: "Para elevar un binomio al cuadrado aplicamos la regla: el cuadrado del primero, más el doble del primero por el segundo, más el cuadrado del segundo.",
+                        graphic: <FormulaBadge title="Binomio al Cuadrado" latex="(a+b)^2 = a^2 + 2ab + b^2" />
                     },
                     { 
-                        latex: String.raw`a = x \quad \text{y} \quad b = 2`, 
-                        propertyText: "2. Identificando Términos", 
-                        robotSpeech: "Identificamos claramente cada término: 'x' toma el rol del primer término (a) y '2' el del segundo término (b)." 
+                        latex: String.raw`\text{a) } (x+2)^2 = (x)^2 + 2(x)(2) + (2)^2`, 
+                        propertyText: "Desarrollo Parte a", 
+                        robotSpeech: "En la parte (a), identificamos a = x y b = 2. Sustituimos los términos en el producto notable." 
                     },
                     { 
-                        latex: String.raw`(x+2)^2 = (x)^2 + 2(x)(2) + (2)^2`, 
-                        propertyText: "3. Reemplazo de los Términos", 
-                        robotSpeech: "Reemplazamos en la regla: el primer término al cuadrado (x)², más el doble del primero por el segundo 2(x)(2), más el segundo al cuadrado (2)²." 
+                        latex: String.raw`\text{a) } (x+2)^2 = \mathbf{x^2 + 4x + 4}`, 
+                        propertyText: "Resultado Parte a", 
+                        robotSpeech: "Multiplicamos 2 por x por 2 para obtener 4x, y 2 al cuadrado es 4. ¡Resuelta la primera parte!" 
                     },
                     { 
-                        latex: String.raw`(x+2)^2 = x^2 + (2 \cdot 2 \cdot x) + 4`, 
-                        propertyText: "4. Multiplicación de Coeficientes", 
-                        robotSpeech: "Efectuamos las potencias y agrupamos la multiplicación de coeficientes en el término central: 2 por 2 es igual a 4." 
+                        latex: String.raw`\text{b) } (3x+6)^2 = (3x)^2 + 2(3x)(6) + (6)^2`, 
+                        propertyText: "Desarrollo Parte b", 
+                        robotSpeech: "Para (3x + 6)², tomamos a = 3x y b = 6. Elevamos todo el bloque (3x) al cuadrado." 
                     },
                     { 
-                        latex: String.raw`(x+2)^2 = \mathbf{x^2 + 4x + 4}`, 
-                        propertyText: "5. Trinomio Cuadrado Perfecto Final", 
-                        robotSpeech: "¡Resultado final obtenido! El binomio desplegado da como resultado el trinomio x² + 4x + 4." 
+                        latex: String.raw`\text{b) } (3x+6)^2 = \mathbf{9x^2 + 36x + 36}`, 
+                        propertyText: "Resultado Parte b", 
+                        robotSpeech: "(3x)² = 9x², el doble producto 2·(3x)·6 es 36x y 6² es 36. ¡Respuesta correcta!" 
                     }
                 ]
             },
             {
-                id: 2, title: "Ejercicio 2", subtitle: "Suma al Cuadrado con Coeficiente",
-                cardGradient: "from-indigo-500/30 to-blue-600/30 border-indigo-400", badgeColor: "bg-indigo-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="(3x + 6)^2" /></span>,
-                steps: [
-                    { 
-                        latex: String.raw`(a+b)^2 = a^2 + 2ab + b^2`, 
-                        propertyText: "1. Aplicando la Identidad", 
-                        robotSpeech: "Usaremos la fórmula del binomio suma al cuadrado para desplegar todos sus términos.",
-                        graphic: <InteractiveFormula title="Binomio al Cuadrado" latex="(a+b)^2 = a^2 + 2ab + b^2" hint="\text{En este caso } a=3x \text{ y } b=6" />
-                    },
-                    { 
-                        latex: String.raw`a = 3x \quad \text{y} \quad b = 6`, 
-                        propertyText: "2. Asignación de Valores", 
-                        robotSpeech: "El primer término 'a' es todo el bloque (3x) y el segundo término 'b' es 6." 
-                    },
-                    { 
-                        latex: String.raw`(3x+6)^2 = (3x)^2 + 2(3x)(6) + (6)^2`, 
-                        propertyText: "3. Planteamiento del Desarrollo", 
-                        robotSpeech: "Reemplazamos con paréntesis: (3x)², luego 2·(3x)·(6) para el término central, y (6)²." 
-                    },
-                    { 
-                        latex: String.raw`(3x+6)^2 = (3^2 \cdot x^2) + (2 \cdot 3 \cdot 6 \cdot x) + 36`, 
-                        propertyText: "4. Desarrollando Potencias y Productos", 
-                        robotSpeech: "Elevamos al cuadrado tanto el 3 como la x: 3² = 9. Luego multiplicamos los números del término central: 2·3·6 = 36." 
-                    },
-                    { 
-                        latex: String.raw`(3x+6)^2 = \mathbf{9x^2 + 36x + 36}`, 
-                        propertyText: "5. Resultado Final Reducido", 
-                        robotSpeech: "¡Excelente! El desarrollo completo da como resultado 9x² + 36x + 36." 
-                    }
-                ]
-            },
-            {
-                id: 3, title: "Ejercicio 3", subtitle: "Resta al Cuadrado Básica",
+                id: 2, title: "Ejercicio 2", subtitle: "Binomio al Cuadrado (Resta)",
                 cardGradient: "from-purple-500/30 to-fuchsia-600/30 border-purple-400", badgeColor: "bg-purple-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="(x - 3)^2" /></span>,
+                enunciado: () => <span>Efectuar directamente cada producto:<br/><MathDisplay inline latex="\text{a) } (x-3)^2 \quad \text{ b) } (2x-5)^2" /></span>,
                 steps: [
                     { 
                         latex: String.raw`(a-b)^2 = a^2 - 2ab + b^2`, 
-                        propertyText: "1. Regla del Binomio Diferencia", 
-                        robotSpeech: "Atención al signo negativo: en la resta al cuadrado, únicamente el término del doble producto lleva el signo menos.",
-                        graphic: <InteractiveFormula title="Binomio Diferencia al Cuadrado" latex="(a-b)^2 = a^2 - 2ab + b^2" hint="\text{El doble producto es negativo: } -2ab" />
+                        propertyText: "Binomio Diferencia", 
+                        robotSpeech: "Cuando tenemos una resta en el binomio al cuadrado, el doble producto lleva signo menos en el medio.",
+                        graphic: <FormulaBadge title="Binomio Diferencia" latex="(a-b)^2 = a^2 - 2ab + b^2" />
                     },
                     { 
-                        latex: String.raw`a = x \quad \text{y} \quad b = 3`, 
-                        propertyText: "2. Identificando a y b", 
-                        robotSpeech: "Tomamos a = x y b = 3 para sustituir en el patrón algebraico." 
+                        latex: String.raw`\text{a) } (x-3)^2 = (x)^2 - 2(x)(3) + (3)^2`, 
+                        propertyText: "Desarrollo Parte a", 
+                        robotSpeech: "Sustituimos a = x y b = 3 cuidando el signo negativo del término central." 
                     },
                     { 
-                        latex: String.raw`(x-3)^2 = (x)^2 - 2(x)(3) + (3)^2`, 
-                        propertyText: "3. Reemplazo del Binomio", 
-                        robotSpeech: "Planteamos la suma y resta de componentes: (x)² - 2(x)(3) + (3)²." 
+                        latex: String.raw`\text{a) } (x-3)^2 = \mathbf{x^2 - 6x + 9}`, 
+                        propertyText: "Resultado Parte a", 
+                        robotSpeech: "Efectuamos 2 · x · 3 = 6x con signo negativo. Obtenemos x² - 6x + 9." 
                     },
                     { 
-                        latex: String.raw`(x-3)^2 = x^2 - (2 \cdot 3)x + 9`, 
-                        propertyText: "4. Multiplicación de Coeficientes", 
-                        robotSpeech: "Multiplicamos 2 por 3 en el término del medio obteniendo -6x, y calculamos 3² que da 9." 
+                        latex: String.raw`\text{b) } (2x-5)^2 = (2x)^2 - 2(2x)(5) + (5)^2`, 
+                        propertyText: "Desarrollo Parte b", 
+                        robotSpeech: "Para la parte (b), a = 2x y b = 5." 
                     },
                     { 
-                        latex: String.raw`(x-3)^2 = \mathbf{x^2 - 6x + 9}`, 
-                        propertyText: "5. Resultado Simplificado", 
-                        robotSpeech: "¡Completado! La respuesta final simplificada es x² - 6x + 9." 
+                        latex: String.raw`\text{b) } (2x-5)^2 = \mathbf{4x^2 - 20x + 25}`, 
+                        propertyText: "Resultado Parte b", 
+                        robotSpeech: "(2x)² resulta 4x², el término del medio es -20x y 5² es 25." 
                     }
                 ]
             },
             {
-                id: 4, title: "Ejercicio 4", subtitle: "Resta al Cuadrado Compleja",
-                cardGradient: "from-pink-500/30 to-rose-600/30 border-pink-400", badgeColor: "bg-pink-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="(2x - 5)^2" /></span>,
+                id: 3, title: "Ejercicio 3", subtitle: "Binomios con Fracciones",
+                cardGradient: "from-rose-500/30 to-pink-600/30 border-rose-400", badgeColor: "bg-rose-500",
+                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\text{a) } \left(2x+\frac{1}{2}\right)^2 \quad \text{ b) } \left(3x+\frac{1}{2}\right)^2" /></span>,
                 steps: [
                     { 
-                        latex: String.raw`(a-b)^2 = a^2 - 2ab + b^2`, 
-                        propertyText: "1. Fórmula General", 
-                        robotSpeech: "Usaremos la diferencia al cuadrado para evitar errores con los coeficientes.",
-                        graphic: <InteractiveFormula title="Diferencia al Cuadrado" latex="(a-b)^2 = a^2 - 2ab + b^2" hint="a=2x \text{ y } b=5" />
+                        latex: String.raw`\text{a) } \left(2x+\frac{1}{2}\right)^2 = (2x)^2 + 2(2x)\left(\frac{1}{2}\right) + \left(\frac{1}{2}\right)^2`, 
+                        propertyText: "Desarrollo Parte a", 
+                        robotSpeech: "Aplicamos la regla del binomio. Observa cómo el 2 del numerador se simplifica con el 2 del denominador en el término central." 
                     },
                     { 
-                        latex: String.raw`a = 2x \quad \text{y} \quad b = 5`, 
-                        propertyText: "2. Identificación de Componentes", 
-                        robotSpeech: "Notamos que 'a' corresponde al término compuesto (2x) y 'b' es la constante 5." 
+                        latex: String.raw`\text{a) } \left(2x+\frac{1}{2}\right)^2 = \mathbf{4x^2 + 2x + \frac{1}{4}}`, 
+                        propertyText: "Resultado Parte a", 
+                        robotSpeech: "2·(2x)·(1/2) nos da 2x, y (1/2)² es 1/4. ¡Resultado obtenido!" 
                     },
                     { 
-                        latex: String.raw`(2x-5)^2 = (2x)^2 - 2(2x)(5) + (5)^2`, 
-                        propertyText: "3. Planteamiento del Desarrollo", 
-                        robotSpeech: "Escribimos explícitamente: (2x)² - 2(2x)(5) + (5)²." 
+                        latex: String.raw`\text{b) } \left(3x+\frac{1}{2}\right)^2 = (3x)^2 + 2(3x)\left(\frac{1}{2}\right) + \left(\frac{1}{2}\right)^2`, 
+                        propertyText: "Desarrollo Parte b", 
+                        robotSpeech: "En la parte (b), sustituimos a = 3x y b = 1/2." 
                     },
                     { 
-                        latex: String.raw`(2x-5)^2 = (2^2 \cdot x^2) - (2 \cdot 2 \cdot 5 \cdot x) + 25`, 
-                        propertyText: "4. Resolviendo cada Parte", 
-                        robotSpeech: "Elevamos (2)² = 4, calculamos la multiplicación central 2·2·5 = 20 y elevamos 5² = 25." 
-                    },
-                    { 
-                        latex: String.raw`(2x-5)^2 = \mathbf{4x^2 - 20x + 25}`, 
-                        propertyText: "5. Trinomio Resultante", 
-                        robotSpeech: "¡Resuelto paso a paso! La respuesta es 4x² - 20x + 25." 
+                        latex: String.raw`\text{b) } \left(3x+\frac{1}{2}\right)^2 = \mathbf{9x^2 + 3x + \frac{1}{4}}`, 
+                        propertyText: "Resultado Parte b", 
+                        robotSpeech: "Simplificamos 2·(3x)·(1/2) obteniendo 3x. ¡Completado!" 
                     }
                 ]
             },
             {
-                id: 5, title: "Ejercicio 5", subtitle: "Binomio con Fracción 1/2",
+                id: 4, title: "Ejercicio 4", subtitle: "Fracciones con Coeficientes",
                 cardGradient: "from-amber-500/30 to-orange-600/30 border-amber-400", badgeColor: "bg-amber-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\left(2x + \frac{1}{2}\right)^2" /></span>,
+                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\text{a) } \left(3x+\frac{2}{7}\right)^2 \quad \text{ b) } \left(3x+\frac{1}{3}\right)^2" /></span>,
                 steps: [
                     { 
-                        latex: String.raw`(a+b)^2 = a^2 + 2ab + b^2`, 
-                        propertyText: "1. Fórmula del Binomio", 
-                        robotSpeech: "Aplicamos la regla del binomio suma para expresiones que contienen números fraccionarios.",
-                        graphic: <InteractiveFormula title="Fracciones al Cuadrado" latex="\left(\frac{1}{2}\right)^2 = \frac{1^2}{2^2} = \frac{1}{4}" hint="\text{Elevar la fracción afecta a numerador y denominador}" />
+                        latex: String.raw`\text{a) } \left(3x+\frac{2}{7}\right)^2 = (3x)^2 + 2(3x)\left(\frac{2}{7}\right) + \left(\frac{2}{7}\right)^2`, 
+                        propertyText: "Desarrollo Parte a", 
+                        robotSpeech: "Para el doble producto multiplicamos 2 por 3x por 2/7." 
                     },
                     { 
-                        latex: String.raw`a = 2x \quad \text{y} \quad b = \frac{1}{2}`, 
-                        propertyText: "2. Identificación Término por Término", 
-                        robotSpeech: "Primer término a = 2x, segundo término b = 1/2." 
+                        latex: String.raw`\text{a) } \left(3x+\frac{2}{7}\right)^2 = \mathbf{9x^2 + \frac{12}{7}x + \frac{4}{49}}`, 
+                        propertyText: "Resultado Parte a", 
+                        robotSpeech: "2·3·2 = 12, sobre 7 nos da (12/7)x. Y (2/7)² = 4/49." 
                     },
                     { 
-                        latex: String.raw`\left(2x+\frac{1}{2}\right)^2 = (2x)^2 + 2(2x)\left(\frac{1}{2}\right) + \left(\frac{1}{2}\right)^2`, 
-                        propertyText: "3. Reemplazo Explícito", 
-                        robotSpeech: "Reemplazamos: (2x)² + 2·(2x)·(1/2) + (1/2)²." 
+                        latex: String.raw`\text{b) } \left(3x+\frac{1}{3}\right)^2 = (3x)^2 + 2(3x)\left(\frac{1}{3}\right) + \left(\frac{1}{3}\right)^2`, 
+                        propertyText: "Desarrollo Parte b", 
+                        robotSpeech: "En el término central de (b), el 3 de 3x se simplifica con el 3 del denominador 1/3." 
                     },
                     { 
-                        latex: String.raw`\left(2x+\frac{1}{2}\right)^2 = 4x^2 + \left(\frac{2 \cdot 2x \cdot 1}{2}\right) + \frac{1}{4}`, 
-                        propertyText: "4. Simplificación del Término Central", 
-                        robotSpeech: "En el término del medio 2·(2x)·(1/2), cancelamos el factor 2 que multiplica con el 2 que divide." 
-                    },
-                    { 
-                        latex: String.raw`\left(2x+\frac{1}{2}\right)^2 = \mathbf{4x^2 + 2x + \frac{1}{4}}`, 
-                        propertyText: "5. Resultado Final", 
-                        robotSpeech: "¡Listo! Obtenemos el trinomio simplificado 4x² + 2x + 1/4." 
+                        latex: String.raw`\text{b) } \left(3x+\frac{1}{3}\right)^2 = \mathbf{9x^2 + 2x + \frac{1}{9}}`, 
+                        propertyText: "Resultado Parte b", 
+                        robotSpeech: "Queda 2x en el medio y 1/9 al final. ¡Excelente!" 
                     }
                 ]
             },
             {
-                id: 6, title: "Ejercicio 6", subtitle: "Binomio con Coeficiente 3 y Fracción",
+                id: 5, title: "Ejercicio 5", subtitle: "Binomios con Radicales",
                 cardGradient: "from-lime-500/30 to-green-600/30 border-lime-400", badgeColor: "bg-lime-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\left(3x + \frac{1}{2}\right)^2" /></span>,
+                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\text{a) } (2\sqrt{2}x + 2)^2 \quad \text{ b) } (3\sqrt{2}x + 4)^2" /></span>,
                 steps: [
                     { 
-                        latex: String.raw`(a+b)^2 = a^2 + 2ab + b^2`, 
-                        propertyText: "1. Regla Básica", 
-                        robotSpeech: "Desplegamos según el patrón del binomio al cuadrado.",
-                        graphic: <InteractiveFormula title="Multiplicación de Fracciones" latex="2 \cdot (3x) \cdot \frac{1}{2} = \frac{6x}{2} = 3x" hint="\text{Cancelación directa del 2}" />
+                        latex: String.raw`(a\sqrt{b})^2 = a^2 \cdot b`, 
+                        propertyText: "Propiedad de Radicales", 
+                        robotSpeech: "Al elevar un término con raíz al cuadrado: (2√2)² = 2² · (√2)² = 4 · 2 = 8.",
+                        graphic: <FormulaBadge title="Potencia de una Raíz" latex="(a\sqrt{b})^2 = a^2 \cdot b" />
                     },
                     { 
-                        latex: String.raw`a = 3x \quad \text{y} \quad b = \frac{1}{2}`, 
-                        propertyText: "2. Asignación de Términos", 
-                        robotSpeech: "Definimos a = 3x para el primer término y b = 1/2 para el segundo." 
+                        latex: String.raw`\text{a) } (2\sqrt{2}x+2)^2 = (2\sqrt{2}x)^2 + 2(2\sqrt{2}x)(2) + (2)^2`, 
+                        propertyText: "Desarrollo Parte a", 
+                        robotSpeech: "Sustituimos en el binomio al cuadrado con cuidado de elevar los coeficientes radicales." 
                     },
                     { 
-                        latex: String.raw`\left(3x+\frac{1}{2}\right)^2 = (3x)^2 + 2(3x)\left(\frac{1}{2}\right) + \left(\frac{1}{2}\right)^2`, 
-                        propertyText: "3. Planteamiento", 
-                        robotSpeech: "Escribimos todo la estructura: (3x)² + 2(3x)(1/2) + (1/2)²." 
+                        latex: String.raw`\text{a) } (2\sqrt{2}x+2)^2 = \mathbf{8x^2 + 8\sqrt{2}x + 4}`, 
+                        propertyText: "Resultado Parte a", 
+                        robotSpeech: "(2√2 x)² = 8x², y el doble producto es 2·2√2·2 x = 8√2 x." 
                     },
                     { 
-                        latex: String.raw`\left(3x+\frac{1}{2}\right)^2 = 9x^2 + \left(2 \cdot \frac{1}{2}\right)(3x) + \frac{1}{4}`, 
-                        propertyText: "4. Operaciones Término a Término", 
-                        robotSpeech: "3² = 9x². Multiplicamos 2 por 1/2 que resulta 1, dejando únicamente 3x en el centro." 
+                        latex: String.raw`\text{b) } (3\sqrt{2}x+4)^2 = (3\sqrt{2}x)^2 + 2(3\sqrt{2}x)(4) + (4)^2`, 
+                        propertyText: "Desarrollo Parte b", 
+                        robotSpeech: "Para (b), (3√2)² = 9 · 2 = 18." 
                     },
                     { 
-                        latex: String.raw`\left(3x+\frac{1}{2}\right)^2 = \mathbf{9x^2 + 3x + \frac{1}{4}}`, 
-                        propertyText: "5. Expresión Final", 
-                        robotSpeech: "¡Perfecto! La expresión totalmente reducida es 9x² + 3x + 1/4." 
+                        latex: String.raw`\text{b) } (3\sqrt{2}x+4)^2 = \mathbf{18x^2 + 24\sqrt{2}x + 16}`, 
+                        propertyText: "Resultado Parte b", 
+                        robotSpeech: "Obtenemos 18x² + 24√2x + 16. ¡Fantástico!" 
                     }
                 ]
             },
             {
-                id: 7, title: "Ejercicio 7", subtitle: "Fracción de Denominador 7",
+                id: 6, title: "Ejercicio 6", subtitle: "Identidades de Legendre (Suma)",
                 cardGradient: "from-emerald-500/30 to-teal-600/30 border-emerald-400", badgeColor: "bg-emerald-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\left(3x + \frac{2}{7}\right)^2" /></span>,
-                steps: [
-                    { 
-                        latex: String.raw`(a+b)^2 = a^2 + 2ab + b^2`, 
-                        propertyText: "1. Identidad de Referencia", 
-                        robotSpeech: "Aplicamos el binomio al cuadrado con fracción de denominador 7." 
-                    },
-                    { 
-                        latex: String.raw`a = 3x \quad \text{y} \quad b = \frac{2}{7}`, 
-                        propertyText: "2. Términos Identificados", 
-                        robotSpeech: "Primer término a = 3x y segundo término b = 2/7." 
-                    },
-                    { 
-                        latex: String.raw`\left(3x+\frac{2}{7}\right)^2 = (3x)^2 + 2(3x)\left(\frac{2}{7}\right) + \left(\frac{2}{7}\right)^2`, 
-                        propertyText: "3. Sustitución Completa", 
-                        robotSpeech: "Sustituimos minuciosamente cada valor en la fórmula general." 
-                    },
-                    { 
-                        latex: String.raw`\left(3x+\frac{2}{7}\right)^2 = 9x^2 + \left(\frac{2 \cdot 3 \cdot 2}{7}\right)x + \frac{2^2}{7^2}`, 
-                        propertyText: "4. Multiplicación Fraccionaria", 
-                        robotSpeech: "Multiplicamos numeradores 2·3·2 = 12 en el medio y elevamos 2²/7² = 4/49 al final." 
-                    },
-                    { 
-                        latex: String.raw`\left(3x+\frac{2}{7}\right)^2 = \mathbf{9x^2 + \frac{12}{7}x + \frac{4}{49}}`, 
-                        propertyText: "5. Resultado Final", 
-                        robotSpeech: "¡Reto resuelto! El resultado en fracciones exactas es 9x² + (12/7)x + 4/49." 
-                    }
-                ]
-            },
-            {
-                id: 8, title: "Ejercicio 8", subtitle: "Fracción de Denominador 3",
-                cardGradient: "from-teal-500/30 to-cyan-600/30 border-teal-400", badgeColor: "bg-teal-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\left(3x + \frac{1}{3}\right)^2" /></span>,
-                steps: [
-                    { 
-                        latex: String.raw`(a+b)^2 = a^2 + 2ab + b^2`, 
-                        propertyText: "1. Patrón del Binomio", 
-                        robotSpeech: "Usamos nuevamente el binomio suma al cuadrado." 
-                    },
-                    { 
-                        latex: String.raw`a = 3x \quad \text{y} \quad b = \frac{1}{3}`, 
-                        propertyText: "2. Identificación de Componentes", 
-                        robotSpeech: "Asignamos a = 3x y b = 1/3." 
-                    },
-                    { 
-                        latex: String.raw`\left(3x+\frac{1}{3}\right)^2 = (3x)^2 + 2(3x)\left(\frac{1}{3}\right) + \left(\frac{1}{3}\right)^2`, 
-                        propertyText: "3. Planteamiento", 
-                        robotSpeech: "Reemplazamos: (3x)² + 2(3x)(1/3) + (1/3)²." 
-                    },
-                    { 
-                        latex: String.raw`\left(3x+\frac{1}{3}\right)^2 = 9x^2 + 2 \cdot \left(\frac{3}{3}\right)x + \frac{1}{9}`, 
-                        propertyText: "4. Simplificación de Factores", 
-                        robotSpeech: "Simplificamos 3/3 = 1 en el término del medio, dejando únicamente 2x." 
-                    },
-                    { 
-                        latex: String.raw`\left(3x+\frac{1}{3}\right)^2 = \mathbf{9x^2 + 2x + \frac{1}{9}}`, 
-                        propertyText: "5. Trinomio Final", 
-                        robotSpeech: "¡Resuelto! La respuesta reducida es 9x² + 2x + 1/9." 
-                    }
-                ]
-            },
-            {
-                id: 9, title: "Ejercicio 9", subtitle: "Binomio con Radical 2",
-                cardGradient: "from-cyan-500/30 to-blue-600/30 border-cyan-400", badgeColor: "bg-cyan-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="(2\sqrt{2}x + 2)^2" /></span>,
-                steps: [
-                    { 
-                        latex: String.raw`(a+b)^2 = a^2 + 2ab + b^2`, 
-                        propertyText: "1. Fórmula del Binomio", 
-                        robotSpeech: "Para trabajar con radicales, aplicamos las leyes de potencias a cada factor.",
-                        graphic: <InteractiveFormula title="Leyes de Radicales" latex="(2\sqrt{2})^2 = 2^2 \cdot (\sqrt{2})^2 = 4 \cdot 2 = 8" hint="\text{El cuadrado elimina la raíz cuadrada}" />
-                    },
-                    { 
-                        latex: String.raw`a = 2\sqrt{2}x \quad \text{y} \quad b = 2`, 
-                        propertyText: "2. Asignación de Términos", 
-                        robotSpeech: "Primer término a = 2√2x, segundo término b = 2." 
-                    },
-                    { 
-                        latex: String.raw`(2\sqrt{2}x+2)^2 = (2\sqrt{2}x)^2 + 2(2\sqrt{2}x)(2) + (2)^2`, 
-                        propertyText: "3. Reemplazo del Desarrollo", 
-                        robotSpeech: "Planteamos: (2√2x)² + 2(2√2x)(2) + (2)²." 
-                    },
-                    { 
-                        latex: String.raw`(2\sqrt{2}x+2)^2 = (2^2 \cdot (\sqrt{2})^2 \cdot x^2) + (2 \cdot 2 \cdot 2 \cdot \sqrt{2}x) + 4`, 
-                        propertyText: "4. Desarrollando Raíces y Coeficientes", 
-                        robotSpeech: "(2√2)² = 4·2 = 8x². En el medio multiplicamos 2·2·2 = 8, obteniendo 8√2x." 
-                    },
-                    { 
-                        latex: String.raw`(2\sqrt{2}x+2)^2 = \mathbf{8x^2 + 8\sqrt{2}x + 4}`, 
-                        propertyText: "5. Resultado con Radicales", 
-                        robotSpeech: "¡Excelente! La respuesta final simplificada es 8x² + 8√2x + 4." 
-                    }
-                ]
-            },
-            {
-                id: 10, title: "Ejercicio 10", subtitle: "Identidad de Legendre Suma",
-                cardGradient: "from-sky-500/30 to-indigo-600/30 border-sky-400", badgeColor: "bg-sky-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="(x + 2)^2 + (x - 2)^2" /></span>,
+                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\text{a) } (x+2)^2 + (x-2)^2 \quad \text{ b) } (2x+3)^2 + (2x-3)^2" /></span>,
                 steps: [
                     { 
                         latex: String.raw`(a+b)^2 + (a-b)^2 = 2(a^2 + b^2)`, 
-                        propertyText: "1. 1ª Identidad de Legendre", 
-                        robotSpeech: "Al sumar el cuadrado de una suma y una diferencia con los mismos términos, usamos la primera Identidad de Legendre.",
-                        graphic: <InteractiveFormula title="1ª Identidad de Legendre" latex="(a+b)^2 + (a-b)^2 = 2(a^2 + b^2)" hint="\text{Ahorra desarrollar ambos binomios}" />
+                        propertyText: "1ª Identidad de Legendre", 
+                        robotSpeech: "Cuando sumamos el cuadrado de la suma y el cuadrado de la diferencia de dos términos, usamos la 1ra identidad de Legendre: 2(a² + b²).",
+                        graphic: <FormulaBadge title="1ª Identidad de Legendre" latex="(a+b)^2 + (a-b)^2 = 2(a^2 + b^2)" />
                     },
                     { 
-                        latex: String.raw`a = x \quad \text{y} \quad b = 2`, 
-                        propertyText: "2. Identificando TérminosComunes", 
-                        robotSpeech: "Identificamos a = x y b = 2 en ambas expresiones." 
+                        latex: String.raw`\text{a) } (x+2)^2 + (x-2)^2 = 2(x^2 + 2^2)`, 
+                        propertyText: "Aplicando Legendre a", 
+                        robotSpeech: "Con a = x y b = 2, aplicamos directamente 2(x² + 2²)." 
                     },
                     { 
-                        latex: String.raw`(x+2)^2 + (x-2)^2 = 2\left[(x)^2 + (2)^2\right]`, 
-                        propertyText: "3. Aplicación de la Identidad", 
-                        robotSpeech: "Sustituimos directamente en la fórmula de Legendre: 2[(x)² + (2)²]." 
+                        latex: String.raw`\text{a) } 2(x^2 + 4) = \mathbf{2x^2 + 8}`, 
+                        propertyText: "Resultado Parte a", 
+                        robotSpeech: "Multiplicamos por 2 para obtener 2x² + 8." 
                     },
                     { 
-                        latex: String.raw`2(x^2 + 4)`, 
-                        propertyText: "4. Operación del Paréntesis", 
-                        robotSpeech: "Calculamos 2² = 4 dentro del corchete: 2(x² + 4)." 
+                        latex: String.raw`\text{b) } (2x+3)^2 + (2x-3)^2 = 2((2x)^2 + 3^2)`, 
+                        propertyText: "Aplicando Legendre b", 
+                        robotSpeech: "Con a = 2x y b = 3, reemplazamos en 2(a² + b²)." 
                     },
                     { 
-                        latex: String.raw`2 \cdot x^2 + 2 \cdot 4 = \mathbf{2x^2 + 8}`, 
-                        propertyText: "5. Propiedad Distributiva Final", 
-                        robotSpeech: "Distribuimos el factor 2: 2·x² + 2·4 = 2x² + 8. ¡Solución facilísima!" 
+                        latex: String.raw`\text{b) } 2(4x^2 + 9) = \mathbf{8x^2 + 18}`, 
+                        propertyText: "Resultado Parte b", 
+                        robotSpeech: "2 · (4x² + 9) nos da 8x² + 18. ¡Mucho más directo!" 
                     }
                 ]
             },
             {
-                id: 11, title: "Ejercicio 11", subtitle: "Identidad de Legendre Resta",
-                cardGradient: "from-violet-500/30 to-purple-600/30 border-violet-400", badgeColor: "bg-violet-500",
-                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="(3x + 4)^2 - (3x - 4)^2" /></span>,
+                id: 7, title: "Ejercicio 7", subtitle: "Identidades de Legendre (Resta)",
+                cardGradient: "from-cyan-500/30 to-blue-600/30 border-cyan-400", badgeColor: "bg-cyan-500",
+                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\text{a) } (3x+4)^2 - (3x-4)^2 \quad \text{ b) } (4x+2)^2 - (4x-2)^2" /></span>,
                 steps: [
                     { 
                         latex: String.raw`(a+b)^2 - (a-b)^2 = 4ab`, 
-                        propertyText: "1. 2ª Identidad de Legendre", 
-                        robotSpeech: "Cuando resta la diferencia de cuadrados, se cancelan los términos cuadráticos y queda únicamente 4ab.",
-                        graphic: <InteractiveFormula title="2ª Identidad de Legendre" latex="(a+b)^2 - (a-b)^2 = 4ab" hint="\text{Resultado de cuádruple producto}" />
+                        propertyText: "2ª Identidad de Legendre", 
+                        robotSpeech: "Cuando restamos el cuadrado de la suma menos el cuadrado de la diferencia, el resultado es simplemente 4ab.",
+                        graphic: <FormulaBadge title="2ª Identidad de Legendre" latex="(a+b)^2 - (a-b)^2 = 4ab" />
                     },
                     { 
-                        latex: String.raw`a = 3x \quad \text{y} \quad b = 4`, 
-                        propertyText: "2. Términos Involucrados", 
-                        robotSpeech: "Observamos que a = 3x y b = 4." 
+                        latex: String.raw`\text{a) } (3x+4)^2 - (3x-4)^2 = 4(3x)(4)`, 
+                        propertyText: "Aplicando Legendre a", 
+                        robotSpeech: "Sustituimos a = 3x y b = 4 en la fórmula 4ab." 
                     },
                     { 
-                        latex: String.raw`(3x+4)^2 - (3x-4)^2 = 4(3x)(4)`, 
-                        propertyText: "3. Reemplazo en 4ab", 
-                        robotSpeech: "Sustituimos en 4ab: 4 · (3x) · (4)." 
+                        latex: String.raw`\text{a) } 4 \cdot 3x \cdot 4 = \mathbf{48x}`, 
+                        propertyText: "Resultado Parte a", 
+                        robotSpeech: "4 · 3 · 4 = 48x. ¡Solución instantánea!" 
                     },
                     { 
-                        latex: String.raw`(4 \cdot 3 \cdot 4) \cdot x`, 
-                        propertyText: "4. Agrupando Coeficientes", 
-                        robotSpeech: "Agrupamos los coeficientes numéricos para multiplicar: (4 · 3 · 4) = 48." 
+                        latex: String.raw`\text{b) } (4x+2)^2 - (4x-2)^2 = 4(4x)(2)`, 
+                        propertyText: "Aplicando Legendre b", 
+                        robotSpeech: "Para la parte (b), a = 4x y b = 2." 
                     },
                     { 
-                        latex: String.raw`(3x+4)^2 - (3x-4)^2 = \mathbf{48x}`, 
-                        propertyText: "5. Respuesta Reducida", 
-                        robotSpeech: "¡Impresionante! Toda la expresión se reduce a un solo término: 48x." 
+                        latex: String.raw`\text{b) } 4 \cdot 4x \cdot 2 = \mathbf{32x}`, 
+                        propertyText: "Resultado Parte b", 
+                        robotSpeech: "4 · 4 · 2 nos da 32x. ¡Genial!" 
+                    }
+                ]
+            },
+            {
+                id: 8, title: "Ejercicio 8", subtitle: "Combinación de Legendre",
+                cardGradient: "from-sky-500/30 to-indigo-600/30 border-sky-400", badgeColor: "bg-sky-500",
+                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\text{a) } (x+5)^2 - (x-5)^2 \quad \text{ b) } (3x+8)^2 + (3x-8)^2" /></span>,
+                steps: [
+                    { 
+                        latex: String.raw`\text{Resta } \implies 4ab \quad \vert \quad \text{Suma } \implies 2(a^2+b^2)`, 
+                        propertyText: "Identificando la Operación", 
+                        robotSpeech: "La parte (a) es una resta (4ab) y la parte (b) es una suma 2(a² + b²)." 
+                    },
+                    { 
+                        latex: String.raw`\text{a) } (x+5)^2 - (x-5)^2 = 4(x)(5) = \mathbf{20x}`, 
+                        propertyText: "Resultado Parte a", 
+                        robotSpeech: "4 · x · 5 = 20x." 
+                    },
+                    { 
+                        latex: String.raw`\text{b) } (3x+8)^2 + (3x-8)^2 = 2((3x)^2 + 8^2)`, 
+                        propertyText: "Desarrollo Parte b", 
+                        robotSpeech: "Sustituimos a = 3x y b = 8 en la 1ra identidad de Legendre." 
+                    },
+                    { 
+                        latex: String.raw`\text{b) } 2(9x^2 + 64) = \mathbf{18x^2 + 128}`, 
+                        propertyText: "Resultado Parte b", 
+                        robotSpeech: "2 · 9x² = 18x² y 2 · 64 = 128." 
+                    }
+                ]
+            },
+            {
+                id: 9, title: "Ejercicio 9", subtitle: "Práctica de Legendre 4ab",
+                cardGradient: "from-violet-500/30 to-purple-600/30 border-violet-400", badgeColor: "bg-violet-500",
+                enunciado: () => <span>Efectuar directamente:<br/><MathDisplay inline latex="\text{a) } (5x+6)^2 - (5x-6)^2 \quad \text{ b) } (4x+7)^2 - (4x-7)^2" /></span>,
+                steps: [
+                    { 
+                        latex: String.raw`(a+b)^2 - (a-b)^2 = 4ab`, 
+                        propertyText: "Segunda Identidad", 
+                        robotSpeech: "Ambos sub-ejercicios son restas de binomios al cuadrado, aplicamos 4ab." 
+                    },
+                    { 
+                        latex: String.raw`\text{a) } (5x+6)^2 - (5x-6)^2 = 4(5x)(6) = \mathbf{120x}`, 
+                        propertyText: "Resultado Parte a", 
+                        robotSpeech: "4 · 5x · 6 = 120x." 
+                    },
+                    { 
+                        latex: String.raw`\text{b) } (4x+7)^2 - (4x-7)^2 = 4(4x)(7) = \mathbf{112x}`, 
+                        propertyText: "Resultado Parte b", 
+                        robotSpeech: "4 · 4x · 7 = 112x. ¡Completado!" 
+                    }
+                ]
+            },
+            {
+                id: 10, title: "Ejercicio 10", subtitle: "Diferencia de Cuadrados (Trinomios 1)",
+                cardGradient: "from-fuchsia-500/30 to-pink-600/30 border-fuchsia-400", badgeColor: "bg-fuchsia-500",
+                enunciado: () => <span>Reducir:<br/><MathDisplay inline latex="(a + b + c)(a + b - c)" /></span>,
+                steps: [
+                    { 
+                        latex: String.raw`((a+b) + c)((a+b) - c)`, 
+                        propertyText: "Agrupación", 
+                        robotSpeech: "Agrupamos el término (a + b) como un solo bloque. Tendremos la forma (X + c)(X - c).",
+                        graphic: <FormulaBadge title="Diferencia de Cuadrados" latex="(X+Y)(X-Y) = X^2 - Y^2" />
+                    },
+                    { 
+                        latex: String.raw`= (a+b)^2 - c^2`, 
+                        propertyText: "Diferencia de Cuadrados", 
+                        robotSpeech: "Aplicamos diferencia de cuadrados: el primer bloque al cuadrado menos c²." 
+                    },
+                    { 
+                        latex: String.raw`= (a^2 + 2ab + b^2) - c^2`, 
+                        propertyText: "Desarrollo del Binomio", 
+                        robotSpeech: "Desarrollamos el binomio al cuadrado (a + b)²." 
+                    },
+                    { 
+                        latex: String.raw`= \mathbf{a^2 + 2ab + b^2 - c^2}`, 
+                        propertyText: "Resultado Reducido", 
+                        robotSpeech: "¡Expresión totalmente reducida!" 
+                    }
+                ]
+            },
+            {
+                id: 11, title: "Ejercicio 11", subtitle: "Diferencia de Cuadrados (Trinomios 2)",
+                cardGradient: "from-indigo-500/30 to-blue-600/30 border-indigo-400", badgeColor: "bg-indigo-500",
+                enunciado: () => <span>Reducir:<br/><MathDisplay inline latex="(x + 1 + z)(x + 1 - z)" /></span>,
+                steps: [
+                    { 
+                        latex: String.raw`((x+1) + z)((x+1) - z)`, 
+                        propertyText: "Agrupamiento de Bloque", 
+                        robotSpeech: "Agrupamos (x + 1) como nuestro primer término y 'z' como el segundo." 
+                    },
+                    { 
+                        latex: String.raw`= (x+1)^2 - z^2`, 
+                        propertyText: "Aplicando (A+B)(A-B)", 
+                        robotSpeech: "Nos queda (x + 1)² - z² por diferencia de cuadrados." 
+                    },
+                    { 
+                        latex: String.raw`= (x^2 + 2x + 1) - z^2`, 
+                        propertyText: "Desarrollo", 
+                        robotSpeech: "Desarrollamos (x + 1)² = x² + 2x + 1." 
+                    },
+                    { 
+                        latex: String.raw`= \mathbf{x^2 + 2x + 1 - z^2}`, 
+                        propertyText: "Resultado Final", 
+                        robotSpeech: "¡Respuesta final reducida con éxito!" 
                     }
                 ]
             },
             {
                 id: 12, title: "Ejercicio 12", subtitle: "Binomio al Cubo",
-                cardGradient: "from-fuchsia-500/30 to-rose-600/30 border-fuchsia-400", badgeColor: "bg-fuchsia-500",
-                enunciado: () => <span>Desarrollar:<br/><MathDisplay inline latex="(x + 2)^3" /></span>,
+                cardGradient: "from-teal-500/30 to-emerald-600/30 border-teal-400", badgeColor: "bg-teal-500",
+                enunciado: () => <span>Desarrollar:<br/><MathDisplay inline latex="\text{a) } (x+2)^3 \quad \text{ b) } (x+3)^3" /></span>,
                 steps: [
                     { 
                         latex: String.raw`(a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3`, 
-                        propertyText: "1. Fórmula del Binomio al Cubo", 
-                        robotSpeech: "Para desarrollar el cubo de un binomio, seguimos los cuatro términos del polinomio estándar.",
-                        graphic: <InteractiveFormula title="Binomio al Cubo" latex="(a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3" hint="\text{Fórmula completa de 4 términos}" />
+                        propertyText: "Fórmula Binomio al Cubo", 
+                        robotSpeech: "Para el cubo de un binomio aplicamos: cubo del primero, más el triple del primero al cuadrado por el segundo, más el triple del primero por el segundo al cuadrado, más el cubo del segundo.",
+                        graphic: <FormulaBadge title="Binomio al Cubo" latex="(a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3" />
                     },
                     { 
-                        latex: String.raw`a = x \quad \text{y} \quad b = 2`, 
-                        propertyText: "2. Identificación de Componentes", 
-                        robotSpeech: "Primer término a = x, segundo término b = 2." 
+                        latex: String.raw`\text{a) } (x+2)^3 = x^3 + 3(x)^2(2) + 3(x)(2)^2 + (2)^3`, 
+                        propertyText: "Desarrollo Parte a", 
+                        robotSpeech: "Con a = x y b = 2, reemplazamos en cada término." 
                     },
                     { 
-                        latex: String.raw`(x+2)^3 = (x)^3 + 3(x)^2(2) + 3(x)(2)^2 + (2)^3`, 
-                        propertyText: "3. Sustitución Completa", 
-                        robotSpeech: "Reemplazamos: (x)³ + 3(x)²(2) + 3(x)(2)² + (2)³." 
+                        latex: String.raw`\text{a) } (x+2)^3 = \mathbf{x^3 + 6x^2 + 12x + 8}`, 
+                        propertyText: "Resultado Parte a", 
+                        robotSpeech: "Calculamos 3·2 = 6, 3·4 = 12 y 2³ = 8. ¡Obtenemos x³ + 6x² + 12x + 8!" 
                     },
                     { 
-                        latex: String.raw`(x+2)^3 = x^3 + (3 \cdot 2)x^2 + (3 \cdot 4)x + 8`, 
-                        propertyText: "4. Multiplicaciones de Coeficientes", 
-                        robotSpeech: "Calculamos las potencias: 2² = 4 y 2³ = 8. Luego multiplicamos 3·2 = 6 y 3·4 = 12." 
+                        latex: String.raw`\text{b) } (x+3)^3 = x^3 + 3(x)^2(3) + 3(x)(3)^2 + (3)^3`, 
+                        propertyText: "Desarrollo Parte b", 
+                        robotSpeech: "Para (x + 3)³, tomamos a = x y b = 3." 
                     },
                     { 
-                        latex: String.raw`(x+2)^3 = \mathbf{x^3 + 6x^2 + 12x + 8}`, 
-                        propertyText: "5. Polinomio Cubico Resultante", 
-                        robotSpeech: "¡Felicitaciones! Has completado con éxito la resolución paso a paso de los 12 ejercicios." 
+                        latex: String.raw`\text{b) } (x+3)^3 = \mathbf{x^3 + 9x^2 + 27x + 27}`, 
+                        propertyText: "Resultado Parte b", 
+                        robotSpeech: "3·3 = 9, 3·9 = 27 y 3³ = 27. ¡Hemos completado los 12 ejercicios de la guía!" 
                     }
                 ]
             }
@@ -612,283 +556,296 @@
         });
 
         const RobotAssistant = ({ step, maxSteps }) => {
-            const isFinalStep = step >= maxSteps;
-            const isThinking = step === maxSteps - 1;
+            const isFinalStep = step >= maxSteps - 1;
+            const isThinking = step > 0 && step < maxSteps - 1;
 
             const getContainerAnim = () => { if (isFinalStep) return 'animate-robotJump'; if (isThinking) return 'animate-robotThinkTilt'; return 'animate-robotFloat'; };
-            const getArmLAnim = () => { if (isFinalStep) return 'rotate-[150deg] animate-pulse'; if (step > 0) return 'animate-robotTalkArmL'; return 'rotate-45'; };
-            const getArmRAnim = () => { if (isFinalStep) return '-rotate-[150deg] animate-pulse'; if (step > 0) return 'animate-robotTalkArmR'; return '-rotate-45'; };
-            
-            const getEyes = () => {
-                if (isFinalStep) return <div className="w-full flex justify-between px-1.5"><div className="w-3.5 h-2 bg-emerald-400 rounded-t-full mt-1"></div><div className="w-3.5 h-2 bg-emerald-400 rounded-t-full mt-1"></div></div>;
-                if (step === 0) return <div className="w-full flex justify-between px-2"><div className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-pulse"></div><div className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-pulse"></div></div>;
-                return <div className="w-full flex justify-between px-1.5"><div className="w-3 h-3 bg-yellow-400 rounded-full animate-bounce"></div><div className="w-3 h-3 bg-yellow-400 rounded-full animate-bounce"></div></div>;
-            };
-            const getMouth = () => {
-                if (isFinalStep) return <div className="w-6 h-3.5 bg-rose-400 rounded-b-full mt-1.5"></div>;
-                if (step === 0) return <div className="w-4 h-1.5 bg-cyan-300 rounded-full mt-2"></div>;
-                return <div className="w-3.5 h-3.5 bg-rose-400 rounded-full mt-1 animate-ping"></div>;
-            };
+            const getArmLAnim = () => { if (isFinalStep) return 'animate-robotTalkArmL'; return ''; };
+            const getArmRAnim = () => { if (isFinalStep) return 'animate-robotTalkArmR'; return ''; };
 
             return (
-                <div className={`relative flex flex-col items-center drop-shadow-lg select-none ${getContainerAnim()}`}>
-                    <div className="relative z-0 flex flex-col items-center translate-y-1">
-                        <div className={`w-3.5 h-3.5 rounded-full shadow-[0_0_10px_currentColor] z-10 transition-colors duration-300 ${isFinalStep ? 'text-emerald-400 bg-emerald-400' : 'text-yellow-400 bg-yellow-400 animate-pulse'}`}></div>
-                        <div className="w-1.5 h-4 bg-slate-300"></div>
-                    </div>
-                    <div className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-white to-slate-200 rounded-[1.2rem] border-[3px] border-indigo-400 shadow-xl flex flex-col items-center justify-center p-1.5">
-                        <div className="w-full h-full bg-slate-900 rounded-lg flex flex-col items-center justify-center p-1.5 shadow-inner border-2 border-indigo-500">
-                            {getEyes()} {getMouth()}
-                        </div>
-                    </div>
-                    <div className={`absolute top-1/2 -left-2 w-3 h-5 bg-slate-200 border-[2.5px] border-indigo-400 rounded-full z-0 origin-top ${getArmLAnim()}`}></div>
-                    <div className={`absolute top-1/2 -right-2 w-3 h-5 bg-slate-200 border-[2.5px] border-indigo-400 rounded-full z-0 origin-top ${getArmRAnim()}`}></div>
+                <div className={`relative w-20 h-24 sm:w-28 sm:h-32 flex-shrink-0 ${getContainerAnim()}`}>
+                    <svg viewBox="0 0 100 120" className="w-full h-full drop-shadow-2xl">
+                        <line x1="50" y1="25" x2="50" y2="10" stroke="#38bdf8" strokeWidth="4" strokeLinecap="round" />
+                        <circle cx="50" cy="8" r="5" fill={isFinalStep ? "#4ade80" : "#fbbf24"} className="animate-pulse" />
+                        
+                        <g className={getArmLAnim()} style={{ transformOrigin: '20px 45px' }}>
+                            <rect x="5" y="45" width="15" height="30" rx="7" fill="#475569" />
+                            <circle cx="12.5" cy="78" r="5" fill="#38bdf8" />
+                        </g>
+                        <g className={getArmRAnim()} style={{ transformOrigin: '80px 45px' }}>
+                            <rect x="80" y="45" width="15" height="30" rx="7" fill="#475569" />
+                            <circle cx="87.5" cy="78" r="5" fill="#38bdf8" />
+                        </g>
+
+                        <rect x="22" y="40" width="56" height="45" rx="12" fill="url(#bodyGradient)" stroke="#38bdf8" strokeWidth="3" />
+                        <rect x="30" y="48" width="40" height="28" rx="6" fill="#0f172a" />
+                        
+                        <circle cx="50" cy="62" r="7" fill={isFinalStep ? "#4ade80" : "#f43f5e"} className="animate-ping opacity-75" />
+                        <circle cx="50" cy="62" r="5" fill={isFinalStep ? "#22c55e" : "#fb7185"} />
+
+                        <rect x="20" y="12" width="60" height="32" rx="10" fill="url(#headGradient)" stroke="#38bdf8" strokeWidth="3" />
+                        
+                        <ellipse cx="38" cy="28" rx={isThinking ? "5" : "6"} ry={isThinking ? "2" : "6"} fill="#38bdf8" />
+                        <ellipse cx="62" cy="28" rx={isThinking ? "5" : "6"} ry={isThinking ? "2" : "6"} fill="#38bdf8" />
+                        <circle cx="40" cy="26" r="2" fill="#ffffff" />
+                        <circle cx="64" cy="26" r="2" fill="#ffffff" />
+
+                        {isFinalStep ? (
+                            <path d="M 38 36 Q 50 44 62 36" fill="none" stroke="#38bdf8" strokeWidth="3" strokeLinecap="round" />
+                        ) : (
+                            <line x1="40" y1="36" x2="60" y2="36" stroke="#38bdf8" strokeWidth="3" strokeLinecap="round" />
+                        )}
+
+                        <defs>
+                            <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#1e293b" />
+                                <stop offset="100%" stopColor="#334155" />
+                            </linearGradient>
+                            <linearGradient id="headGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#334155" />
+                                <stop offset="100%" stopColor="#0f172a" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
                 </div>
             );
         };
 
         function App() {
-            const [view, setView] = useState('home');
-            const [exIdx, setExIdx] = useState(0);
-            const [step, setStep] = useState(0);
+            const [currentExerciseIdx, setCurrentExerciseIdx] = useState(0);
+            const [currentStepIdx, setCurrentStepIdx] = useState(0);
             const [isMuted, setIsMuted] = useState(false);
-            const scrollContainerRef = useRef(null);
+            const [showCelebration, setShowCelebration] = useState(false);
+            const historyEndRef = useRef(null);
 
-            const currentExercise = EXERCISES[exIdx];
-            const maxSteps = currentExercise.steps.length - 1;
-            const currentStepData = currentExercise.steps[step];
-            const EnunciadoText = currentExercise.enunciado;
-
-            const handleInteraction = () => AudioController.init();
+            const activeExercise = EXERCISES[currentExerciseIdx];
+            const maxSteps = activeExercise.steps.length;
+            const currentStep = activeExercise.steps[currentStepIdx];
+            const isLastStep = currentStepIdx === maxSteps - 1;
 
             useEffect(() => {
-                if(scrollContainerRef.current) {
-                    scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+                AudioController.init();
+            }, []);
+
+            useEffect(() => {
+                if (historyEndRef.current) {
+                    historyEndRef.current.scrollIntoView({ behavior: 'smooth' });
                 }
-            }, [step, exIdx, view]);
+            }, [currentStepIdx]);
 
-            const startExercise = (index) => {
-                handleInteraction();
-                AudioController.play('swoosh');
-                setExIdx(index);
-                setStep(0);
-                setView('lab');
-            };
-
-            const nextStep = () => {
-                handleInteraction();
-                if (step < maxSteps) {
-                    const next = step + 1;
-                    setStep(next);
-                    if (next === maxSteps) AudioController.play('success');
-                    else AudioController.play('pop');
-                } else {
-                    if (exIdx < EXERCISES.length - 1) {
-                        AudioController.play('swoosh');
-                        setExIdx(exIdx + 1);
-                        setStep(0);
+            const handleNextStep = () => {
+                if (currentStepIdx < maxSteps - 1) {
+                    const nextIdx = currentStepIdx + 1;
+                    setCurrentStepIdx(nextIdx);
+                    if (nextIdx === maxSteps - 1) {
+                        AudioController.play('success');
+                        setShowCelebration(true);
+                        setTimeout(() => setShowCelebration(false), 1800);
                     } else {
-                        AudioController.play('swoosh');
-                        setView('home');
+                        AudioController.play('pop');
                     }
                 }
             };
 
-            const prevStep = () => {
-                handleInteraction();
-                if (step > 0) {
-                    setStep(step - 1);
+            const handlePrevStep = () => {
+                if (currentStepIdx > 0) {
+                    setCurrentStepIdx(currentStepIdx - 1);
                     AudioController.play('pop-reverse');
                 }
             };
 
-            const toggleMute = () => { handleInteraction(); setIsMuted(AudioController.toggleMute()); };
+            const handleSelectExercise = (idx) => {
+                if (idx !== currentExerciseIdx) {
+                    setCurrentExerciseIdx(idx);
+                    setCurrentStepIdx(0);
+                    AudioController.play('swoosh');
+                }
+            };
 
-            if (view === 'home') {
-                return (
-                    <div className="w-screen min-h-[100dvh] bg-gradient-to-br from-[#1e3a8a] via-[#4338ca] to-[#be185d] flex flex-col items-center justify-start p-4 sm:p-6 relative font-fun overflow-y-auto overflow-x-hidden scrollbar-hide">
-                        <FloatingBackground />
-                        
-                        <div className="w-[96%] max-w-[1400px] z-20 flex items-center justify-between mb-8 sm:mb-12 mt-2">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border-2 border-yellow-300 bg-white/15 backdrop-blur-md text-yellow-300 font-black tracking-wider uppercase shadow-md text-sm sm:text-base">
-                                <Rocket className="w-5 h-5 text-yellow-300" /> TuProfe20 Lab
-                            </div>
-                            <button onClick={toggleMute} className="p-2 sm:p-3 rounded-2xl bg-white/20 border-2 border-white/30 backdrop-blur-md text-white hover:bg-white/30 transition-all active:scale-95">
-                                {isMuted ? <VolumeX className="w-5 h-5 sm:w-6 sm:h-6" /> : <Volume2 className="w-5 h-5 sm:w-6 sm:h-6" />}
-                            </button>
-                        </div>
-
-                        <div className="relative z-10 text-center w-[96%] max-w-[1400px] flex flex-col items-center">
-                            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-3 sm:mb-5 drop-shadow-[0_6px_0_rgba(0,0,0,0.3)] tracking-tight leading-none uppercase">
-                                Productos <span className="text-yellow-300 underline decoration-wavy decoration-cyan-400">Notables</span>
-                            </h1>
-                            <p className="text-base sm:text-xl lg:text-2xl text-purple-100 mb-8 sm:mb-12 font-bold max-w-3xl leading-relaxed">
-                                ¡Resuelve cada uno de los 12 retos interactivos paso a paso con KaTeX y reglas explicativas! 🚀🤖
-                            </p>
-
-                            <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-12">
-                                {EXERCISES.map((ex, idx) => (
-                                    <button
-                                        key={ex.id}
-                                        onClick={() => startExercise(idx)}
-                                        className="group text-left p-4 sm:p-5 rounded-[1.5rem] bg-gradient-to-br bg-opacity-90 backdrop-blur-xl border-[3px] border-white/40 hover:-translate-y-2 hover:shadow-[0_15px_30px_rgba(0,0,0,0.3)] transition-all flex flex-col relative overflow-hidden shadow-lg min-h-[10rem] sm:min-h-[12rem]"
-                                        style={{ backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))` }}
-                                    >
-                                        <div className={`absolute inset-0 opacity-80 ${ex.cardGradient}`}></div>
-                                        <div className="relative z-10 flex-1 flex flex-col">
-                                            <div className="flex items-center justify-between mb-3">
-                                                <span className={`${ex.badgeColor} text-white text-xs sm:text-sm font-black px-3 py-1 rounded-md uppercase tracking-widest shadow-sm shrink-0`}>
-                                                    Reto {ex.id}
-                                                </span>
-                                                <span className="bg-black/20 text-white text-xs font-bold px-2 py-1 rounded-md">
-                                                    {ex.steps.length} pasos
-                                                </span>
-                                            </div>
-                                            <div className="flex-1 my-2 bg-white/95 rounded-xl p-3 text-slate-900 shadow-inner overflow-hidden flex items-center justify-center border border-white/60 w-full pointer-events-none math-card">
-                                                <MathDisplay latex={ex.steps[0].latex} />
-                                            </div>
-                                            <div className="text-white text-sm sm:text-base font-black text-center mt-2 drop-shadow-md">
-                                                {ex.subtitle}
-                                            </div>
-                                        </div>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
+            const handleToggleAudio = () => {
+                const muted = AudioController.toggleMute();
+                setIsMuted(muted);
+            };
 
             return (
-                <div className="w-screen h-[100dvh] bg-gradient-to-br from-[#0f172a] via-[#312e81] to-[#831843] text-slate-800 flex flex-col p-2 sm:p-4 relative font-fun overflow-hidden">
+                <div className="relative w-full h-full flex flex-col justify-between overflow-hidden text-slate-100 p-2 sm:p-4 font-fun bg-slate-950">
                     <FloatingBackground />
-                    {step === maxSteps && <Confetti />}
+                    {showCelebration && <Confetti />}
 
-                    {/* Navbar InGame */}
-                    <div className="shrink-0 relative z-10 w-[96%] max-w-[1400px] mx-auto flex justify-between items-center mb-3 sm:mb-4 px-1">
-                        <button onClick={() => { AudioController.play('swoosh'); setView('home'); }} className="flex items-center justify-center px-4 py-2 sm:px-5 sm:py-2.5 rounded-[1rem] sm:rounded-[1.2rem] bg-white/10 border-[3px] border-white/30 backdrop-blur-md text-white font-black hover:bg-white/20 transition-all shadow-lg active:scale-95 text-sm sm:text-base hover:scale-105">
-                            <Home className="w-5 h-5 sm:mr-2" />
-                            <span className="hidden sm:inline">Portada</span>
-                        </button>
-
-                        <div className="flex items-center gap-1.5 sm:gap-2 bg-black/30 p-1.5 sm:p-2 rounded-[1rem] sm:rounded-[1.2rem] border-2 border-white/20 backdrop-blur-md shadow-lg overflow-x-auto scrollbar-hide max-w-[50vw]">
-                            {EXERCISES.map((ex, i) => (
-                                <button
-                                    key={ex.id}
-                                    onClick={() => startExercise(i)}
-                                    className={`shrink-0 w-8 h-8 sm:w-11 sm:h-11 rounded-[0.8rem] sm:rounded-[1rem] font-black text-sm sm:text-base transition-all ${exIdx === i ? 'bg-yellow-400 text-slate-900 scale-110 shadow-[0_0_15px_rgba(250,204,21,0.6)]' : 'text-white hover:bg-white/20'}`}
-                                >
-                                    {ex.id}
-                                </button>
-                            ))}
+                    {/* Navbar Superior */}
+                    <header className="relative z-10 w-full flex items-center justify-between bg-slate-900/90 backdrop-blur-md px-4 sm:px-6 py-2.5 rounded-2xl border border-slate-800 shadow-xl">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
+                                <Rocket className="text-white" size={22} />
+                            </div>
+                            <div>
+                                <h1 className="text-lg sm:text-xl font-black text-white tracking-wide">
+                                    TuProfe20 Lab <span className="text-cyan-400 font-bold text-sm sm:text-base">Productos notables</span>
+                                </h1>
+                            </div>
                         </div>
 
-                        <button onClick={toggleMute} className="p-2 sm:p-3 rounded-[1rem] sm:rounded-[1.2rem] bg-white/10 border-[3px] border-white/30 text-white hover:bg-white/20 transition-all shadow-lg active:scale-95 hover:scale-105">
-                            {isMuted ? <VolumeX className="w-5 h-5 sm:w-6 sm:h-6" /> : <Volume2 className="w-5 h-5 sm:w-6 sm:h-6" />}
-                        </button>
-                    </div>
+                        <div className="flex items-center gap-2">
+                            <button 
+                                onClick={handleToggleAudio}
+                                className="p-2 sm:p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 transition-all active:scale-95"
+                                title={isMuted ? "Activar Audio" : "Silenciar"}
+                            >
+                                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                            </button>
+                            <button
+                                onClick={() => handleSelectExercise(0)}
+                                className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all active:scale-95"
+                            >
+                                <Home size={16} /> Inicio
+                            </button>
+                        </div>
+                    </header>
 
-                    <div className="flex-1 min-h-0 relative z-10 w-[96%] max-w-[1400px] mx-auto bg-white rounded-[2rem] sm:rounded-[2.5rem] border-[6px] sm:border-[8px] border-slate-100 shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden">
+                    {/* Selector Horizontal de Ejercicios */}
+                    <nav className="relative z-10 w-full my-2 overflow-x-auto scrollbar-hide py-1">
+                        <div className="flex items-center justify-start sm:justify-center gap-2 min-w-max px-2">
+                            {EXERCISES.map((ex, idx) => {
+                                const isActive = idx === currentExerciseIdx;
+                                return (
+                                    <button
+                                        key={ex.id}
+                                        onClick={() => handleSelectExercise(idx)}
+                                        className={`px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black transition-all transform active:scale-95 ${
+                                            isActive
+                                                ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/30 scale-105'
+                                                : 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700'
+                                        }`}
+                                    >
+                                        Ex {ex.id}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </nav>
+
+                    {/* Layout de Contenido */}
+                    <main className="relative z-10 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 min-h-0 overflow-hidden my-1">
                         
-                        {/* Enunciado Area */}
-                        <div className="shrink-0 bg-slate-900 border-b-[4px] border-blue-500 px-4 py-3 sm:px-6 flex flex-col justify-center relative shadow-md z-20">
-                            <div className="flex justify-between items-center w-full max-w-5xl mx-auto mb-2">
-                                <span className="bg-yellow-400 text-slate-900 font-black text-xs sm:text-sm px-3 py-1 rounded-md uppercase tracking-widest shadow-sm">
-                                    {currentExercise.title}
-                                </span>
-                                <span className="text-cyan-200 font-bold text-xs sm:text-sm bg-white/10 px-3 py-1 rounded-md">
-                                    {currentExercise.subtitle}
-                                </span>
-                            </div>
-                            <div className="flex flex-col items-center justify-center text-white font-bold text-lg sm:text-xl md:text-2xl text-center w-full max-w-5xl mx-auto leading-relaxed math-enunciado">
-                                <EnunciadoText />
-                            </div>
-                        </div>
-
-                        {/* Desarrollo Contínuo */}
-                        <div className="flex-1 flex flex-col items-center p-4 sm:p-6 relative bg-slate-50 overflow-hidden w-full">
-                            <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#000_2px,transparent_2px)] [background-size:20px_20px] pointer-events-none"></div>
-
-                            {/* Badge actual arriba flotando */}
-                            <div key={`badge-${exIdx}-${step}`} className="z-20 mb-4 animate-jellyPop text-center shrink-0">
-                                <span className={`inline-flex items-center gap-2 sm:gap-3 px-5 py-2 sm:px-6 sm:py-2.5 rounded-[1rem] font-black text-sm sm:text-lg lg:text-xl shadow-lg border-2 ${step === maxSteps ? 'bg-amber-400 text-slate-900 border-yellow-200' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-400'}`}>
-                                    <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" /> 
-                                    <span>{currentStepData.propertyText}</span>
+                        {/* Historial / Enunciado (5 Cols) */}
+                        <section className="lg:col-span-5 flex flex-col bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+                            <div className={`p-3 sm:p-4 bg-gradient-to-r ${activeExercise.cardGradient} border-b border-slate-800 flex items-center justify-between`}>
+                                <div>
+                                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider text-white ${activeExercise.badgeColor} mb-1 shadow-sm`}>
+                                        {activeExercise.subtitle}
+                                    </span>
+                                    <h2 className="text-base sm:text-lg font-black text-white">{activeExercise.title}</h2>
+                                </div>
+                                <span className="text-xs font-extrabold text-cyan-300 bg-slate-950/50 px-2.5 py-1 rounded-lg border border-slate-700">
+                                    Paso {currentStepIdx + 1} / {maxSteps}
                                 </span>
                             </div>
 
-                            {/* Contenedor escrolleable */}
-                            <div ref={scrollContainerRef} className="w-full flex-1 flex flex-col items-center justify-start z-10 px-2 space-y-4 sm:space-y-6 overflow-y-auto scrollbar-hide pb-4">
-                                {currentExercise.steps.slice(0, step + 1).map((s, idx) => (
-                                    <div key={`${exIdx}-${idx}`} className={`transition-all duration-300 w-full max-w-3xl flex flex-col items-center ${idx === step ? 'opacity-100 scale-100 animate-slideInRight' : 'opacity-60 scale-95'}`}>
-                                        
-                                        <div className={`px-4 py-3 sm:px-8 sm:py-4 w-fit max-w-full text-center rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center min-h-[4rem] sm:min-h-[5rem] overflow-x-auto scrollbar-hide ${
-                                            idx === step 
-                                            ? (step === maxSteps ? 'bg-[#fde047] border-[4px] sm:border-[6px] border-[#eab308] shadow-[0_15px_30px_rgba(234,179,8,0.5)] math-current' : 'bg-white border-[4px] sm:border-[6px] border-blue-400 shadow-[0_10px_25px_rgba(59,130,246,0.3)] math-current') 
-                                            : 'bg-white/70 border-[2px] sm:border-[3px] border-slate-200 math-history'
-                                        }`}>
-                                            <MathDisplay latex={s.latex} />
+                            <div className="p-3 sm:p-4 bg-slate-950/80 border-b border-slate-800 text-center math-enunciado">
+                                <div className="text-xs text-slate-400 font-bold mb-1 uppercase tracking-wider">Enunciado</div>
+                                {activeExercise.enunciado()}
+                            </div>
+
+                            <div className="flex-1 p-3 sm:p-4 overflow-y-auto space-y-3 scrollbar-hide">
+                                <h3 className="text-xs font-black text-cyan-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <Sparkles size={14} /> Pasos Recorridos
+                                </h3>
+                                {activeExercise.steps.slice(0, currentStepIdx + 1).map((st, i) => (
+                                    <div 
+                                        key={i} 
+                                        className={`p-3 rounded-xl border transition-all animate-slideInRight ${
+                                            i === currentStepIdx 
+                                                ? 'bg-slate-800 border-cyan-500/50 shadow-lg' 
+                                                : 'bg-slate-950/40 border-slate-800 opacity-70'
+                                        }`}
+                                    >
+                                        <div className="flex items-center justify-between mb-1">
+                                            <span className="text-[10px] font-black text-cyan-300 uppercase tracking-wider bg-slate-900 px-2 py-0.5 rounded border border-slate-700">
+                                                Paso {i + 1}: {st.propertyText}
+                                            </span>
+                                            {i === currentStepIdx && (
+                                                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+                                            )}
                                         </div>
-                                        
-                                        {/* Gráfico/Tarjeta interactiva opcional si existe en el paso */}
-                                        {s.graphic && (
-                                            <div className={`mt-4 w-full max-w-xl transition-all ${idx === step ? 'opacity-100' : 'opacity-70'}`}>
-                                                {s.graphic}
-                                            </div>
-                                        )}
+                                        <div className="math-history py-1">
+                                            <MathDisplay latex={st.latex} />
+                                        </div>
                                     </div>
                                 ))}
+                                <div ref={historyEndRef} />
                             </div>
-                        </div>
+                        </section>
 
-                        {/* Zona Inferior: Robot y Feedback */}
-                        <div className="shrink-0 bg-white w-full px-4 py-2 sm:px-8 sm:py-3 flex items-center gap-4 sm:gap-6 border-t-[4px] border-slate-100 z-20 relative shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
-                            <div className="shrink-0 absolute -top-12 sm:relative sm:-top-0 left-4 sm:left-0 drop-shadow-xl">
-                                <RobotAssistant step={step} maxSteps={maxSteps} />
-                            </div>
-                            <div className="flex-1 text-sm sm:text-base md:text-lg font-bold text-slate-700 leading-snug sm:leading-relaxed bg-blue-50/80 p-3 sm:p-4 rounded-[1rem] border-2 border-blue-100 min-h-[4rem] flex items-center shadow-sm ml-[4.5rem] sm:ml-0">
-                                <div key={`speech-${exIdx}-${step}`} className="animate-slideInRight w-full">
-                                    {currentStepData.robotSpeech}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Controles Nav */}
-                        <div className="shrink-0 bg-gradient-to-b from-[#e0e7ff] to-[#c7d2fe] p-2 sm:p-3 w-full flex flex-col items-center border-t-[4px] border-white z-20">
-                            <div className="flex justify-center items-stretch w-full max-w-4xl gap-2 sm:gap-4 h-10 sm:h-12">
-                                <button
-                                    onClick={prevStep}
-                                    disabled={step === 0}
-                                    className="flex-[0.8] bg-[#a5b4fc] border-b-[4px] border-[#6366f1] text-[#312e81] rounded-l-xl font-black text-sm sm:text-lg flex items-center justify-center gap-1 active:border-b-0 active:translate-y-[4px] disabled:opacity-40 transition-all hover:bg-[#c7d2fe]"
-                                >
-                                    <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3px]" />
-                                    <span className="hidden sm:inline">Atrás</span>
-                                </button>
-
-                                <div className="bg-[#6366f1] text-white font-black px-3 sm:px-6 text-sm sm:text-xl flex items-center justify-center border-b-[4px] border-[#4338ca] shadow-inner whitespace-nowrap min-w-[4rem]">
-                                    Paso {step + 1}/{maxSteps + 1}
+                        {/* Área Interactiva Principal (7 Cols) */}
+                        <section className="lg:col-span-7 flex flex-col justify-between bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-800 p-3 sm:p-5 shadow-2xl overflow-y-auto scrollbar-hide">
+                            
+                            <div className="flex-1 flex flex-col items-center justify-center bg-slate-950/90 rounded-2xl border border-slate-800 p-4 my-1 relative overflow-hidden">
+                                <div className="absolute top-3 left-3 flex items-center gap-1.5 text-xs font-extrabold text-cyan-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
+                                    <Sparkles size={14} /> {currentStep.propertyText}
                                 </div>
 
+                                <div className="w-full my-4 math-current animate-jellyPop" key={`${currentExerciseIdx}-${currentStepIdx}`}>
+                                    <MathDisplay latex={currentStep.latex} />
+                                </div>
+
+                                {currentStep.graphic && (
+                                    <div className="w-full max-w-md mt-2">
+                                        {currentStep.graphic}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Caja del Robot */}
+                            <div className="flex items-center gap-3 sm:gap-4 bg-slate-800/80 rounded-2xl p-3 sm:p-4 border border-slate-700 shadow-xl my-2">
+                                <RobotAssistant step={currentStepIdx} maxSteps={maxSteps} />
+                                <div className="flex-1">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <h4 className="text-xs sm:text-sm font-black text-cyan-400 uppercase tracking-wide">Explicación del Profe</h4>
+                                        {isLastStep && (
+                                            <span className="text-[10px] font-black text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">
+                                                ¡Ejercicio Resuelto!
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-xs sm:text-sm text-slate-200 font-bold leading-relaxed">
+                                        {currentStep.robotSpeech}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Controles */}
+                            <div className="flex items-center justify-between gap-3 pt-2">
                                 <button
-                                    onClick={nextStep}
-                                    className={`flex-[2] border-b-[4px] text-white rounded-r-xl font-black text-sm sm:text-xl flex items-center justify-center gap-2 active:border-b-0 active:translate-y-[4px] transition-all shadow-sm hover:brightness-110 ${
-                                        step === maxSteps
-                                            ? 'bg-gradient-to-r from-[#10b981] to-[#047857] border-[#065f46] animate-pulse'
-                                            : 'bg-gradient-to-r from-[#3b82f6] to-[#2563eb] border-[#1d4ed8]'
+                                    onClick={handlePrevStep}
+                                    disabled={currentStepIdx === 0}
+                                    className={`flex-1 py-3 px-4 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all active:scale-95 ${
+                                        currentStepIdx === 0
+                                            ? 'bg-slate-800/40 text-slate-600 cursor-not-allowed border border-slate-800'
+                                            : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
                                     }`}
                                 >
-                                    <span>
-                                        {step < maxSteps
-                                            ? '¡Siguiente Paso!'
-                                            : exIdx < EXERCISES.length - 1
-                                            ? `Siguiente Reto`
-                                            : '¡Volver!'}
-                                    </span>
-                                    <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3px]" />
+                                    <ChevronLeft size={18} /> Anterior
                                 </button>
+
+                                {isLastStep ? (
+                                    <button
+                                        onClick={() => handleSelectExercise((currentExerciseIdx + 1) % EXERCISES.length)}
+                                        className="flex-1 py-3 px-4 rounded-xl font-black text-xs sm:text-sm bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all transform active:scale-95"
+                                    >
+                                        Siguiente Ejercicio <ChevronRight size={18} />
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleNextStep}
+                                        className="flex-1 py-3 px-4 rounded-xl font-black text-xs sm:text-sm bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 transition-all transform active:scale-95"
+                                    >
+                                        Siguiente Paso <ChevronRight size={18} />
+                                    </button>
+                                )}
                             </div>
-                        </div>
-                    </div>
+                        </section>
+                    </main>
                 </div>
             );
         }
